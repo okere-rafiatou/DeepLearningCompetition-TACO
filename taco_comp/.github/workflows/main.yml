@@ -1,0 +1,82 @@
+name: Evaluate Submission
+
+on:
+  pull_request:
+    paths:
+      - "submissions/*.json"
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install pycocotools
+
+      - name: Write hidden test annotations
+        env:
+          TEST_ANNOTATIONS: ${{ secrets.TEST_ANNOTATIONS }}
+        run: echo "$TEST_ANNOTATIONS" > evaluation/test_annotations.json
+
+      - name: Detect submission file
+        id: detect
+        run: |
+          FILE=$(git diff --name-only origin/main HEAD -- "submissions/*.json" \
+            | grep -v sample_submission \
+            | grep -v test_image_ids \
+            | head -1)
+          echo "file=$FILE" >> $GITHUB_OUTPUT
+          echo "Detected: $FILE"
+
+      - name: Score submission
+        id: score
+        run: |
+          RESULT=$(python evaluation/score.py ${{ steps.detect.outputs.file }})
+          echo "result=$RESULT" >> $GITHUB_OUTPUT
+          echo "$RESULT"
+
+      - name: Update leaderboard
+        run: python leaderboard/update.py
+
+      - name: Commit leaderboard
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add leaderboard/README.md scores.json
+          git commit -m "Update leaderboard" || echo "Nothing to commit"
+          git push origin HEAD:main
+
+      - name: Post score as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const result = JSON.parse(`${{ steps.score.outputs.result }}`);
+            const body = [
+              `**Submission evaluated successfully**`,
+              ``,
+              `| Metric | Score |`,
+              `|--------|-------|`,
+              `| mAP50 | ${result.mAP50} |`,
+              `| mAP50-95 | ${result['mAP50-95']} |`,
+              ``,
+              `[View leaderboard](leaderboard/README.md)`,
+            ].join('\n');
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body,
+            });
