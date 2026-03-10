@@ -2,11 +2,8 @@ name: Evaluate Submission
 
 on:
   pull_request:
-    paths:
-      - "submissions/*.json"
-    types:
-      - opened
-      - synchronize
+    types: [opened, synchronize, reopened]
+
 
 jobs:
   evaluate:
