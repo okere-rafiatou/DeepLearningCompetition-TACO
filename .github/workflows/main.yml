@@ -44,7 +44,7 @@ jobs:
       - name: Score submission
         id: score
         run: |
-          RESULT=$(python evaluation/score.py ${{ steps.detect.outputs.file }})
+          RESULT=$(python evaluation/score.py ${{ steps.detect.outputs.file }} | tail -n 1)
           echo "result=$RESULT" >> $GITHUB_OUTPUT
 
       - name: Update leaderboard
