@@ -95,13 +95,15 @@ Update `TACO.yaml` with your local data path before training.
 
 ### Step 6 — Generate your submission file
 
-Run inference on the test images and generate your `predictions.json`:
+Run inference on the test images and generate your submission file:
 
 ```bash
 python infer.py --model runs/detect/train/yolov8m_100epochs/weights/best.pt \
                 --source path/to/data/test \
                 --output YOUR_NAME_submission.json
 ```
+
+> **Important — file naming rule:** your file MUST end with `_submission.json` (example: `marie_submission.json`, `john_submission.json`). If the name does not follow this pattern, the workflow will not detect it and your submission will not be scored.
 
 Check `submissions/test_image_ids.json` to verify your predictions cover all 485 test images.
 
@@ -164,6 +166,8 @@ Your submission must be a `.json` file following the COCO detection results form
 - `score` : confidence score between 0 and 1
 
 See `submissions/sample_submission.json` for a complete example.
+
+> **Warning — common mistake:** your file must be a JSON **list** starting with `[`. Do NOT wrap it in a dictionary with keys like `metadata`, `images`, or `summary`. A file starting with `{` will be rejected.
 
 ---
 
@@ -228,7 +232,9 @@ Full training logs are available in `runs/detect/train/yolov8m_100epochs/`.
 
 ## Common Issues
 
-**My PR workflow failed** — Check that your file is in `submissions/`, is valid JSON, and that you opened a PR, not a direct commit to main.
+**My PR workflow failed** — Check two things: (1) your file is in `submissions/`, (2) your file name ends with `_submission.json`. Example: `marie_submission.json`. Files named `annotations.json`, `predictions.json`, or any name not ending in `_submission.json` will not be detected.
+
+**My submission was not detected** — Rename your file so it ends with `_submission.json` and submit again.
 
 **Invalid image_id** — All image IDs must appear in `submissions/test_image_ids.json`.
 
