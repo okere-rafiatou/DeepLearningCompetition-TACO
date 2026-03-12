@@ -4,5 +4,11 @@
     "mAP50": 0.9992,
     "mAP50-95": 0.9992,
     "submitted_at": "2026-03-12 20:32 UTC"
+  },
+  "geraud": {
+    "name": "geraud",
+    "mAP50": 0.9992,
+    "mAP50-95": 0.9992,
+    "submitted_at": "2026-03-12 21:28 UTC"
   }
 }
