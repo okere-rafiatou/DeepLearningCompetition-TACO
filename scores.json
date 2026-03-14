@@ -4,6 +4,11 @@
     "mAP50": 0.9992,
     "mAP50-95": 0.9992,
     "submitted_at": "2026-03-12 20:32 UTC"
+  },
+  "badelebintou": {
+    "name": "badelebintou",
+    "mAP50": 0.997,
+    "mAP50-95": 0.997,
+    "submitted_at": "2026-03-14 23:46 UTC"
   }
- 
 }

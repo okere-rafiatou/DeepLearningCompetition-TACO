@@ -1,10 +1,11 @@
 # Live Leaderboard — TACO Waste Detection
 
-*Last updated: 2026-03-14 23:39 UTC*
+*Last updated: 2026-03-14 23:46 UTC*
 
 | Rank | Name | mAP50 | mAP50-95 | Submitted at |
 |------|------|-------|----------|--------------|
 | 1 | rafiatou | 0.9992 | 0.9992 | 2026-03-12 20:32 UTC |
+| 2 | badelebintou | 0.9970 | 0.9970 | 2026-03-14 23:46 UTC |
 
 ---
 
